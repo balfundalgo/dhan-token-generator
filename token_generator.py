@@ -25,9 +25,13 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 BASE_DIR   = os.path.dirname(os.path.abspath(sys.argv[0]))
-TOKEN_FILE = os.path.join(BASE_DIR, "dhan_token.json")
 CREDS_FILE = os.path.join(BASE_DIR, "saved_creds.json")
 TOKEN_SERVER_PORT = 5555
+
+# Shared folder — auto-created on first run on any Windows PC
+SHARED_DIR = r"C:\balfund_shared"
+os.makedirs(SHARED_DIR, exist_ok=True)
+TOKEN_FILE = os.path.join(SHARED_DIR, "dhan_token.json")
 
 # ── Shared token state (served over HTTP) ────────────────────────────────────
 current_token_data: dict = {}
@@ -300,7 +304,7 @@ class DhanTokenApp(ctk.CTk):
 
         self.lbl_file = ctk.CTkLabel(
             bcast,
-            text="File     ->   dhan_token.json  (same folder as EXE)",
+            text="File     ->   C:\\balfund_shared\\dhan_token.json  (auto-created)",
             font=ctk.CTkFont(size=11), text_color="#888888"
         )
         self.lbl_file.pack(anchor="w", padx=20, pady=(2, 14))
