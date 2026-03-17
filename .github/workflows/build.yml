@@ -1,0 +1,43 @@
+name: Build Dhan Token Generator EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build EXE with PyInstaller
+        run: |
+          pyinstaller --onefile --windowed `
+            --name "DhanTokenGenerator" `
+            --collect-all customtkinter `
+            --collect-all pyotp `
+            token_generator.py
+
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: DhanTokenGenerator-Windows
+          path: dist/DhanTokenGenerator.exe
+          retention-days: 30
